@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:productos_app/pages/home_page.dart';
 import 'package:productos_app/pages/login_page.dart';
 import 'package:productos_app/pages/producto_page.dart';
+import 'package:productos_app/pages/register_page.dart';
+import 'package:productos_app/services/auth_service.dart';
 import 'package:productos_app/services/producto_service.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(AppState());
 
 class AppState extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ProductoService())
+        ChangeNotifierProvider(create: (_) => ProductoService()),
+        ChangeNotifierProvider(create: (_) => AuthService())
       ],
       child: MyApp(),
     );
@@ -26,11 +28,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Productos App',
-      initialRoute: 'home',
+      initialRoute: 'login',
       routes: {
         'login': (_) => LoginPage(),
         'home': (_) => HomePage(),
         'producto': (_) => ProductoPage(),
+        'register': (_) => RegisterPage(),
       },
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: Colors.grey[300],

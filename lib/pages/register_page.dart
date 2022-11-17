@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:productos_app/providers/login_form_provider.dart';
+import 'package:productos_app/services/auth_service.dart';
 import 'package:productos_app/widgets/card_container.dart';
 import 'package:productos_app/widgets/fondo_login.dart';
 import 'package:provider/provider.dart';
 
-class LoginPage extends StatelessWidget {
+class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +23,7 @@ class LoginPage extends StatelessWidget {
                       height: 10,
                     ),
                     Text(
-                      'Iniciar sesión',
+                      'Crear cuenta',
                       style: Theme.of(context).textTheme.headline5,
                     ),
                     SizedBox(
@@ -39,14 +40,14 @@ class LoginPage extends StatelessWidget {
               ),
               TextButton(
                 child: Text(
-                  'Crea una nueva cuenta',
+                  '¿Ya tienes cuenta?',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 onPressed: () =>
-                    Navigator.pushReplacementNamed(context, 'register'),
+                    Navigator.pushReplacementNamed(context, 'login'),
                 style: ButtonStyle(
                     overlayColor: MaterialStateProperty.all(
                         Colors.indigo.withOpacity(0.1)),
@@ -164,12 +165,22 @@ class _LoginForm extends StatelessWidget {
                   ? null
                   : () async {
                       FocusScope.of(context).unfocus(); //quitar teclado
+                      final authService =
+                          Provider.of<AuthService>(context, listen: false);
                       if (!loginForm.isValidForm()) return;
                       loginForm.isLoading = true;
                       //Navigator.pushReplacementNamed(context, 'home');
-                      await Future.delayed(Duration(seconds: 2));
+                      //await Future.delayed(Duration(seconds: 2));
+                      final String? resp = await authService.crearUsuario(
+                          loginForm.email, loginForm.password);
+
+                      if (resp == null) {
+                        Navigator.pushReplacementNamed(context, 'home');
+                      } else {
+                        print(resp);
+                      }
+
                       loginForm.isLoading = false;
-                      Navigator.pushReplacementNamed(context, 'home');
                     },
             ),
           ],
