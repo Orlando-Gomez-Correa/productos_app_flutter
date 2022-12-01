@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:productos_app/providers/login_form_provider.dart';
+import 'package:productos_app/services/auth_service.dart';
 import 'package:productos_app/widgets/card_container.dart';
 import 'package:productos_app/widgets/fondo_login.dart';
 import 'package:provider/provider.dart';
@@ -164,12 +165,24 @@ class _LoginForm extends StatelessWidget {
                   ? null
                   : () async {
                       FocusScope.of(context).unfocus(); //quitar teclado
+                      final authService = Provider.of<AuthService>(context,
+                          listen: false); //nuevo método
                       if (!loginForm.isValidForm()) return;
                       loginForm.isLoading = true;
                       //Navigator.pushReplacementNamed(context, 'home');
-                      await Future.delayed(Duration(seconds: 2));
+                      //await Future.delayed(Duration(seconds: 2));
+                      final String? resp = await authService.login(
+                          loginForm.email,
+                          loginForm.password); //llamando a metodo login
+
+                      if (resp == null) {
+                        Navigator.pushReplacementNamed(context, 'home');
+                      } else {
+                        print(resp);
+                      }
+
                       loginForm.isLoading = false;
-                      Navigator.pushReplacementNamed(context, 'home');
+                      //Navigator.pushReplacementNamed(context, 'home');
                     },
             ),
           ],
